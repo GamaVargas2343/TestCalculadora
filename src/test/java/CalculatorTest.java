@@ -2,6 +2,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.testng.Assert;
 import org.testng.annotations.*;
 
 public class CalculatorTest {
@@ -12,102 +13,41 @@ public class CalculatorTest {
         driver = new EdgeDriver();
         driver.get("https://testsheepnz.github.io/BasicCalculator.html");
     }
+    @DataProvider(name = "DatosCalculadora")
+    public Object[][] obtenerDatos() {
+        return new Object[][]{
+                {"5", "3", "Add", "8"},
+                {"10", "4", "Subtract", "6"},
+                {"7", "8", "Multiply", "56"},
+                {"20", "5", "Divide", "4"},
+                {"12", "34", "Concatenate", "1234"}
+        };
+    }
 
-    @Test
-    public void testSuma() {
+    @Test(dataProvider = "DatosCalculadora")
+    public void testOperaciones(String num1, String num2, String operacion, String esperado) {
         WebElement number1 = driver.findElement(By.id("number1Field"));
         WebElement number2 = driver.findElement(By.id("number2Field"));
         WebElement dropdown = driver.findElement(By.id("selectOperationDropdown"));
         WebElement boton = driver.findElement(By.id("calculateButton"));
         WebElement resultado = driver.findElement(By.id("numberAnswerField"));
 
-        number1.sendKeys("5");
-        number2.sendKeys("3");
+        number1.clear();
+        number1.sendKeys(num1);
 
-        // seleccionamos la opción "Add" del dropdown
-        dropdown.sendKeys("Add");
+        number2.clear();
+        number2.sendKeys(num2);
 
+        dropdown.sendKeys(operacion);
         boton.click();
 
         String valor = resultado.getAttribute("value");
-        System.out.println("Resultado suma: " + valor);
+        System.out.println("Resultado de " + num1 + " " + operacion + " " + num2 + " = " + valor);
+
+        Assert.assertEquals(valor, esperado, "El resultado no coincide");
+
     }
 
-    @Test
-    public void testResta() {
-        WebElement number1 = driver.findElement(By.id("number1Field"));
-        WebElement number2 = driver.findElement(By.id("number2Field"));
-        WebElement dropdown = driver.findElement(By.id("selectOperationDropdown"));
-        WebElement boton = driver.findElement(By.id("calculateButton"));
-        WebElement resultado = driver.findElement(By.id("numberAnswerField"));
-
-        number1.sendKeys("10");
-        number2.sendKeys("4");
-
-        dropdown.sendKeys("Subtract");
-
-        boton.click();
-
-        String valor = resultado.getAttribute("value");
-        System.out.println("Resultado resta: " + valor);
-    }
-    @Test
-    public void testMultiplicar() {
-        WebElement number1 = driver.findElement(By.id("number1Field"));
-        WebElement number2 = driver.findElement(By.id("number2Field"));
-        WebElement dropdown = driver.findElement(By.id("selectOperationDropdown"));
-        WebElement boton = driver.findElement(By.id("calculateButton"));
-        WebElement resultado = driver.findElement(By.id("numberAnswerField"));
-
-        number1.sendKeys("5");
-        number2.sendKeys("3");
-
-        // seleccionamos la opción "Multiply" del dropdown
-        dropdown.sendKeys("Multiply");
-
-        boton.click();
-
-        String valor = resultado.getAttribute("value");
-        System.out.println("Resultado multiplicar: " + valor);
-    }
-    @Test
-    public void testDividir() {
-        WebElement number1 = driver.findElement(By.id("number1Field"));
-        WebElement number2 = driver.findElement(By.id("number2Field"));
-        WebElement dropdown = driver.findElement(By.id("selectOperationDropdown"));
-        WebElement boton = driver.findElement(By.id("calculateButton"));
-        WebElement resultado = driver.findElement(By.id("numberAnswerField"));
-
-        number1.sendKeys("10");
-        number2.sendKeys("2");
-
-        // seleccionamos la opción "Divide" del dropdown
-        dropdown.sendKeys("Divide");
-
-        boton.click();
-
-        String valor = resultado.getAttribute("value");
-        System.out.println("Resultado dividir: " + valor);
-    }
-    @Test
-    public void testCombinar() {
-        WebElement number1 = driver.findElement(By.id("number1Field"));
-        WebElement number2 = driver.findElement(By.id("number2Field"));
-        WebElement dropdown = driver.findElement(By.id("selectOperationDropdown"));
-        WebElement boton = driver.findElement(By.id("calculateButton"));
-        WebElement resultado = driver.findElement(By.id("numberAnswerField"));
-
-        number1.sendKeys("5");
-        number2.sendKeys("3");
-
-        // seleccionamos la opción "Concatenate" del dropdown
-        dropdown.sendKeys("Concatenate");
-
-        boton.click();
-
-        String valor = resultado.getAttribute("value");
-        System.out.println("Combinacion: " + valor);
-    }
     @AfterMethod
     public void cerrar() {
         driver.quit();
