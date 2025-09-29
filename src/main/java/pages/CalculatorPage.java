@@ -4,9 +4,11 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
+import utils.waithelper;
 
 public class CalculatorPage {
     WebDriver driver;
+    waithelper wait;
 
     // Localizadores
     private By number1Field = By.id("number1Field");
@@ -18,8 +20,8 @@ public class CalculatorPage {
     // Constructor
     public CalculatorPage(WebDriver driver) {
         this.driver = driver;
+        this.wait = new waithelper(driver);
     }
-
     // Métodos de acción
     public void ingresarNumeros(String num1, String num2) {
         WebElement number1 = driver.findElement(number1Field);
@@ -36,7 +38,8 @@ public class CalculatorPage {
     }
 
     public void calcular() {
-        driver.findElement(calculateButton).click();
+        WebElement boton = wait.esperarElementoClickable(calculateButton);
+        boton.click();
     }
 
     public String obtenerResultado() {
