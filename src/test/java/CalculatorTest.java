@@ -1,23 +1,25 @@
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.testng.Assert;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
+import com.aventstack.extentreports.*;
+import utils.reporteHelper;
 import pages.CalculatorPage;
+
+import java.lang.reflect.Method;
 
 public class CalculatorTest {
 
     WebDriver driver;
     CalculatorPage page;
-
+    ExtentTest test;
     @BeforeMethod
-    public void inicio() {
+    public void inicio(Method metodo) {
         driver = new EdgeDriver();
-        driver.manage().window().maximize();
         driver.get("https://testsheepnz.github.io/BasicCalculator.html");
-        page = new CalculatorPage(driver); //
+        page = new CalculatorPage(driver);
+        test=reporteHelper.crearTest(metodo.getName());
+
     }
 
     @DataProvider(name = "DatosCalculadora")
@@ -34,8 +36,11 @@ public class CalculatorTest {
     @Test(dataProvider = "DatosCalculadora")
     public void testCalculadora(String num1, String num2, String operacion, String resultadoEsperado) {
         page.ingresarNumeros(num1, num2);
+        test.log(Status.INFO,"Se digíto correctamente el número: "+num1 + " y el numero : "+num2 );
         page.seleccionarOperacion(operacion);
+        test.log(Status.INFO,"Se seleccionó: " +operacion);
         page.calcular();
+        test.log(Status.INFO,"Se le dio click al botón calcular");
 
         String resultado = page.obtenerResultado();
         Assert.assertEquals(resultado, resultadoEsperado,
@@ -44,8 +49,13 @@ public class CalculatorTest {
 
     @AfterMethod
     public void cerrar() {
-        if (driver != null) {
+
             driver.quit();
-        }
+
     }
+    @AfterSuite
+    public void cerrarReporte(){
+        reporteHelper.generarReporte();
+    }
+
 }
