@@ -20,7 +20,7 @@ public class CalculatorPage {
         this.driver = driver;
     }
 
-    // Métodos de acción
+    // Métodos
     public void ingresarNumeros(String num1, String num2) {
         WebElement number1 = driver.findElement(number1Field);
         WebElement number2 = driver.findElement(number2Field);
