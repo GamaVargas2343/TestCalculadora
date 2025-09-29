@@ -19,7 +19,7 @@ public class CalculatorTest {
         driver.get("https://testsheepnz.github.io/BasicCalculator.html");
         page = new CalculatorPage(driver); //
     }
-
+'Dataprovider'
     @DataProvider(name = "DatosCalculadora")
     public Object[][] obtenerDatos() {
         return new Object[][]{
